@@ -35,9 +35,15 @@ public class AccessibilityPoint {
 
     public VoteStatus getVoteStatus() { return this.voteStatus; }
 
-    public void setVoteStatus(VoteStatus voteStatus) {
-        if (this.voteStatus == voteStatus) this.voteStatus = VoteStatus.NONE;
-        else this.voteStatus = voteStatus;
+    public boolean setVoteStatus(VoteStatus voteStatus) {
+        if (this.voteStatus == voteStatus) {
+            this.voteStatus = VoteStatus.NONE;
+            return false;
+        }
+        else {
+            this.voteStatus = voteStatus;
+            return true;
+        }
     }
 
     public int getScore() {

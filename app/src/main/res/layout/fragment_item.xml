@@ -26,7 +26,7 @@
     <ImageView
         android:layout_width="25dp"
         android:layout_height="50dp"
-        app:srcCompat="@drawable/arrow_red"
+        app:srcCompat="@drawable/arrow_red_inactive"
         android:id="@+id/downvote"
         android:layout_alignParentTop="true"
         android:layout_toStartOf="@+id/count"
@@ -34,7 +34,7 @@
 
     <ImageView
         android:layout_height="50dp"
-        app:srcCompat="@drawable/arrow_green"
+        app:srcCompat="@drawable/arrow_green_inactive"
         android:id="@+id/upvote"
         android:layout_width="25dp"
         android:layout_alignParentTop="true"

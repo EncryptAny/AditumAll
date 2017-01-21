@@ -37,7 +37,13 @@ public class AccessibilityPointRecyclerViewAdapter extends RecyclerView.Adapter<
         holder.upvoteView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                aps.get(position).setVoteStatus(AccessibilityPoint.VoteStatus.UPVOTED);
+                if (aps.get(position).setVoteStatus(AccessibilityPoint.VoteStatus.UPVOTED))
+                {
+                    holder.upvoteView.setImageResource(R.drawable.arrow_green);
+                    holder.downvoteView.setImageResource(R.drawable.arrow_red_inactive);
+                }
+                else
+                    holder.upvoteView.setImageResource(R.drawable.arrow_green_inactive);
                 holder.cntView.setText(Integer.toString(aps.get(position).getScore()));
 
 //                if (null != mListener) {
@@ -51,7 +57,13 @@ public class AccessibilityPointRecyclerViewAdapter extends RecyclerView.Adapter<
         holder.downvoteView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                aps.get(position).setVoteStatus(AccessibilityPoint.VoteStatus.DOWNVOTED);
+                if (aps.get(position).setVoteStatus(AccessibilityPoint.VoteStatus.DOWNVOTED))
+                {
+                    holder.downvoteView.setImageResource(R.drawable.arrow_red);
+                    holder.upvoteView.setImageResource(R.drawable.arrow_green_inactive);
+                }
+                else
+                    holder.downvoteView.setImageResource(R.drawable.arrow_red_inactive);
                 holder.cntView.setText(Integer.toString(aps.get(position).getScore()));
             }
         });
