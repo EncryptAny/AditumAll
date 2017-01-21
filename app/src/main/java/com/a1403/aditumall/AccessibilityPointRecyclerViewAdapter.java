@@ -37,7 +37,7 @@ public class AccessibilityPointRecyclerViewAdapter extends RecyclerView.Adapter<
         holder.upvoteView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                aps.get(position).incUpvotes();
+                aps.get(position).setVoteStatus(AccessibilityPoint.VoteStatus.UPVOTED);
                 holder.cntView.setText(Integer.toString(aps.get(position).getScore()));
 
 //                if (null != mListener) {
@@ -51,7 +51,7 @@ public class AccessibilityPointRecyclerViewAdapter extends RecyclerView.Adapter<
         holder.downvoteView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                aps.get(position).incDownvotes();
+                aps.get(position).setVoteStatus(AccessibilityPoint.VoteStatus.DOWNVOTED);
                 holder.cntView.setText(Integer.toString(aps.get(position).getScore()));
             }
         });

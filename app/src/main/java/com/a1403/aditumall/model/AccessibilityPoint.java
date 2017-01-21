@@ -2,13 +2,23 @@ package com.a1403.aditumall.model;
 
 public class AccessibilityPoint {
     private String name;
-    private int upvotes;
-    private int downvotes;
+    private int upvotes; //BACKEND
+    private boolean upvoted;
+    private int downvotes; //BACKEND
+
+    public enum VoteStatus {
+        NONE,
+        UPVOTED,
+        DOWNVOTED
+    }
+
+    private VoteStatus voteStatus;
 
     public AccessibilityPoint(String name, int upvotes, int downvotes) {
         this.name = name;
         this.upvotes = upvotes;
         this.downvotes = downvotes;
+        this.voteStatus = VoteStatus.NONE;
     }
 
     public String getName() {
@@ -23,15 +33,16 @@ public class AccessibilityPoint {
         return downvotes;
     }
 
-    public void incUpvotes() {
-        this.upvotes = upvotes + 1;
-    }
+    public VoteStatus getVoteStatus() { return this.voteStatus; }
 
-    public void incDownvotes() {
-        this.downvotes = downvotes + 1;
+    public void setVoteStatus(VoteStatus voteStatus) {
+        if (this.voteStatus == voteStatus) this.voteStatus = VoteStatus.NONE;
+        else this.voteStatus = voteStatus;
     }
 
     public int getScore() {
-        return this.upvotes - this.downvotes;
+        if (this.voteStatus == VoteStatus.UPVOTED) return this.upvotes - this.downvotes + 1;
+        else if (this.voteStatus == VoteStatus.DOWNVOTED) return this.upvotes - this.downvotes - 1;
+        else return this.upvotes - this.downvotes;
     }
 }
