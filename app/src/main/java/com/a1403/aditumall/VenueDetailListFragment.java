@@ -71,7 +71,7 @@ public class VenueDetailListFragment extends Fragment {
             }
             List<AccessibilityPoint> aps = new ArrayList<>();
             for (int i=0; i!=10; ++i) {
-                aps.add(new AccessibilityPoint("Really Great Point " + (i+1)));
+                aps.add(new AccessibilityPoint("Really Great Point " + (i+1), (int)(Math.random() * 100), (int)(Math.random() * 100)));
             }
 
 
