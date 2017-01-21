@@ -49,8 +49,7 @@ public class MapsActivity extends Fragment implements GoogleApiClient.Connection
     Location mLastLocation;
     public static final String TAG = MapsActivity.class.getSimpleName();
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
-    Context activityContext;
-    Activity currentActivity;
+
 
     /**
      * Manipulates the map once available.
@@ -69,21 +68,18 @@ public class MapsActivity extends Fragment implements GoogleApiClient.Connection
         // inflat and return the layout
         View v = inflater.inflate(R.layout.activity_maps, container,
                 false);
-        mMapView = (MapView) v.findViewById(R.id.map);
-        mMapView.onCreate(savedInstanceState);
 
-        mMapView.onResume();
-
-        try {
-            MapsInitializer.initialize(getActivity().getApplicationContext());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         locationApi = new GoogleApiClient.Builder(getActivity())
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
                 .build();
+        mMapView = (MapView) v.findViewById(R.id.map);
+        mMapView.onCreate(savedInstanceState);
+
+        mMapView.onResume();
+
+
 
         /*mLocationRequest = LocationRequest.create()
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
@@ -101,7 +97,7 @@ public class MapsActivity extends Fragment implements GoogleApiClient.Connection
         }
 
         if(mSupportMapFragment != null) {
-            mMapView.getMapAsync(new OnMapReadyCallback() {
+            mSupportMapFragment.getMapAsync(new OnMapReadyCallback() {
                 @Override
                 public void onMapReady(GoogleMap googleMap) {
                     mMap = googleMap;
@@ -149,11 +145,13 @@ public class MapsActivity extends Fragment implements GoogleApiClient.Connection
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         Log.i(TAG, "Location services connected.");
-
+        mLocationRequest = LocationRequest.create();
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setInterval(100); // Update location every second
         if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
             if (ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION)
-                    != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(activityContext,
+                    != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(getActivity(),
                     android.Manifest.permission.ACCESS_COARSE_LOCATION)
                     != PackageManager.PERMISSION_GRANTED ) {
 
@@ -163,7 +161,7 @@ public class MapsActivity extends Fragment implements GoogleApiClient.Connection
                     // Show an expanation to the user *asynchronously* -- don't block
                     // this thread waiting for the user's response! After the user
                     // sees the explanation, try again to request the permission.
-                    Toast.makeText(activityContext,"TODO: LOCATION PERMISSION STATEMENT",Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(),"TODO: LOCATION PERMISSION STATEMENT",Toast.LENGTH_LONG).show();
 
                 } else {
 
@@ -204,16 +202,7 @@ public class MapsActivity extends Fragment implements GoogleApiClient.Connection
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        if (connectionResult.hasResolution()) {
-            try {
-                // Start an Activity that tries to resolve the error
-                connectionResult.startResolutionForResult(getActivity(), CONNECTION_FAILURE_RESOLUTION_REQUEST);
-            } catch (IntentSender.SendIntentException e) {
-                e.printStackTrace();
-            }
-        } else {
-            Log.i(TAG, "Location services connection failed with code " + connectionResult.getErrorCode());
-        }
+        buildGoogleApiClient();
     }
     @Override
     public void onRequestPermissionsResult(int requestCode,
@@ -263,5 +252,10 @@ public class MapsActivity extends Fragment implements GoogleApiClient.Connection
     @Override
     public void onLocationChanged(Location location) {
         handleNewLocation(location);
+    }
+    @Override
+    public void onStart() {
+        super.onStart();
+        locationApi.connect();
     }
 }
