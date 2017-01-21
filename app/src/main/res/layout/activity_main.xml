@@ -14,4 +14,11 @@
         android:layout_height="match_parent"
         android:id="@+id/contentContainer"
         layout="@layout/activity_maps"/> />
+
+    <fragment
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:name="com.a1403.aditumall.VenueDetailListFragment"
+        android:id="@+id/fragment" />
+
 </RelativeLayout>

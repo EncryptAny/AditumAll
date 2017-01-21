@@ -10,9 +10,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.a1403.aditumall.dummy.DummyContent;
-import com.a1403.aditumall.dummy.DummyContent.DummyItem;
+import com.a1403.aditumall.model.AccessibilityPoint;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -69,7 +69,13 @@ public class VenueDetailListFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MyItemRecyclerViewAdapter(DummyContent.ITEMS, mListener));
+            List<AccessibilityPoint> aps = new ArrayList<>();
+            for (int i=0; i!=10; ++i) {
+                aps.add(new AccessibilityPoint("Really Great Point " + (i+1)));
+            }
+
+
+            recyclerView.setAdapter(new AccessibilityPointRecyclerViewAdapter(aps, mListener));
         }
         return view;
     }
@@ -104,6 +110,6 @@ public class VenueDetailListFragment extends Fragment {
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(DummyItem item);
+        void onSelectedAP(AccessibilityPoint ap);
     }
 }
