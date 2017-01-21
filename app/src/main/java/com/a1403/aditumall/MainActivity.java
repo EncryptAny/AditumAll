@@ -1,8 +1,12 @@
 package com.a1403.aditumall;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 import android.support.v7.app.AppCompatActivity;
@@ -34,6 +38,33 @@ public class MainActivity extends AppCompatActivity implements VenueDetailListFr
         }else{
 
         }
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.activity_main_actions, menu);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Take appropriate action for each action item click
+        switch (item.getItemId()) {
+            case R.id.fullMapButton:
+                // search action
+                SwitchToMap();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    /**
+     * Launching new activity
+     * */
+    private void SwitchToMap() {
+        Intent i = new Intent(MainActivity.this, FullMap.class);
+        startActivity(i);
     }
     @Override
     public void onSelectedAP(AccessibilityPoint ap) {

@@ -1,17 +1,14 @@
 package com.a1403.aditumall;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.IntentSender;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -31,7 +28,6 @@ import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
@@ -39,7 +35,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapsActivity extends Fragment implements GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener,LocationListener {
+        GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private GoogleMap mMap;
     MapView mMapView;
@@ -66,7 +62,7 @@ public class MapsActivity extends Fragment implements GoogleApiClient.Connection
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // inflat and return the layout
-        View v = inflater.inflate(R.layout.activity_maps, container,
+        View v = inflater.inflate(R.layout.fragment_maps, container,
                 false);
 
         locationApi = new GoogleApiClient.Builder(getActivity())
@@ -96,16 +92,19 @@ public class MapsActivity extends Fragment implements GoogleApiClient.Connection
             fragmentTransaction.replace(R.id.map, mSupportMapFragment).commit();
         }
 
-        if(mSupportMapFragment != null) {
+        if (mSupportMapFragment != null) {
             mSupportMapFragment.getMapAsync(new OnMapReadyCallback() {
                 @Override
                 public void onMapReady(GoogleMap googleMap) {
                     mMap = googleMap;
-
-                    // Add a marker in Sydney and move the camera
-                    LatLng sydney = new LatLng(-34, 151);
-                    mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-                    mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+                    LatLng pastLocation = getPastLocation();
+                    if(mMap != null) {
+                        if (!pastLocation.equals(new LatLng(0, 0))) {
+                            CameraPosition cameraPosition = new CameraPosition.Builder().target(pastLocation).zoom(15.0f).build();
+                            CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
+                            mMap.moveCamera(cameraUpdate);
+                        }
+                    }
                 }
             });
         }
@@ -124,6 +123,7 @@ public class MapsActivity extends Fragment implements GoogleApiClient.Connection
     public void onPause() {
         super.onPause();
         mMapView.onPause();
+        savePastLocation();
         if (locationApi.isConnected()) {
             locationApi.disconnect();
         }
@@ -145,53 +145,7 @@ public class MapsActivity extends Fragment implements GoogleApiClient.Connection
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         Log.i(TAG, "Location services connected.");
-        mLocationRequest = LocationRequest.create();
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        mLocationRequest.setInterval(100); // Update location every second
-        if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-            if (ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION)
-                    != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(getActivity(),
-                    android.Manifest.permission.ACCESS_COARSE_LOCATION)
-                    != PackageManager.PERMISSION_GRANTED ) {
-
-                // Should we show an explanation?
-                if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),android.Manifest.permission.ACCESS_FINE_LOCATION)) {
-
-                    // Show an expanation to the user *asynchronously* -- don't block
-                    // this thread waiting for the user's response! After the user
-                    // sees the explanation, try again to request the permission.
-                    Toast.makeText(getActivity(),"TODO: LOCATION PERMISSION STATEMENT",Toast.LENGTH_LONG).show();
-
-                } else {
-
-                    // No explanation needed, we can request the permission.
-
-                    ActivityCompat.requestPermissions(getActivity(),
-                            new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION,android.Manifest.permission.ACCESS_COARSE_LOCATION},
-                            1);
-
-                }
-            }
-        }
-        Location location = LocationServices.FusedLocationApi.getLastLocation(locationApi);
-        if (location == null) {
-            LocationServices.FusedLocationApi.requestLocationUpdates(locationApi, mLocationRequest, this);
-            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(locationApi);
-
-            double lat = mLastLocation.getLatitude();
-            double lon = mLastLocation.getLongitude();
-            mGoogleMap.getUiSettings().setAllGesturesEnabled(true);
-            mGoogleMap.setMyLocationEnabled(true);
-            LatLng currentLocation = new LatLng(lat, lon);
-            CameraPosition cameraPosition = new CameraPosition.Builder().target(currentLocation).zoom(15.0f).build();
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
-            mGoogleMap.moveCamera(cameraUpdate);
-
-        }
-        else {
-            handleNewLocation(location);
-        };
+        setCurrentLocation();
 
     }
 
@@ -257,5 +211,105 @@ public class MapsActivity extends Fragment implements GoogleApiClient.Connection
     public void onStart() {
         super.onStart();
         locationApi.connect();
+    }
+
+    private void setCurrentLocation(){
+        mLocationRequest = LocationRequest.create();
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setInterval(100); // Update location every second
+        if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            if (ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(getActivity(),
+                    android.Manifest.permission.ACCESS_COARSE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED ) {
+
+                // Should we show an explanation?
+                if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),android.Manifest.permission.ACCESS_FINE_LOCATION)) {
+
+                    // Show an expanation to the user *asynchronously* -- don't block
+                    // this thread waiting for the user's response! After the user
+                    // sees the explanation, try again to request the permission.
+                    Toast.makeText(getActivity(),"TODO: LOCATION PERMISSION STATEMENT",Toast.LENGTH_LONG).show();
+
+                } else {
+
+                    // No explanation needed, we can request the permission.
+
+                    ActivityCompat.requestPermissions(getActivity(),
+                            new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION,android.Manifest.permission.ACCESS_COARSE_LOCATION},
+                            1);
+
+                }
+            }
+        }
+        Location location = LocationServices.FusedLocationApi.getLastLocation(locationApi);
+        if (location == null) {
+            LocationServices.FusedLocationApi.requestLocationUpdates(locationApi, mLocationRequest, this);
+            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(locationApi);
+
+            double lat = mLastLocation.getLatitude();
+            double lon = mLastLocation.getLongitude();
+            mGoogleMap.getUiSettings().setAllGesturesEnabled(true);
+            mGoogleMap.setMyLocationEnabled(true);
+            LatLng currentLocation = new LatLng(lat, lon);
+            CameraPosition cameraPosition = new CameraPosition.Builder().target(currentLocation).zoom(15.0f).build();
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
+            mGoogleMap.moveCamera(cameraUpdate);
+
+        }
+        else {
+            handleNewLocation(location);
+        }
+
+    }
+    private LatLng getPastLocation(){
+        SharedPreferences sp = getActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        String returnedLongitude = sp.getString("pastLongitude","0");
+        String returnedLatitude = sp.getString("pastLatitude","0");
+
+        LatLng returnedLatLng = new LatLng(Double.valueOf(returnedLatitude),Double.valueOf(returnedLongitude));
+
+        return returnedLatLng;
+    }
+    private void savePastLocation(){
+        SharedPreferences sp = getActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+
+        if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            if (ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(getActivity(),
+                    android.Manifest.permission.ACCESS_COARSE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED ) {
+
+                // Should we show an explanation?
+                if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),android.Manifest.permission.ACCESS_FINE_LOCATION)) {
+
+                    // Show an expanation to the user *asynchronously* -- don't block
+                    // this thread waiting for the user's response! After the user
+                    // sees the explanation, try again to request the permission.
+                    Toast.makeText(getActivity(),"TODO: LOCATION PERMISSION STATEMENT",Toast.LENGTH_LONG).show();
+
+                } else {
+
+                    // No explanation needed, we can request the permission.
+
+                    ActivityCompat.requestPermissions(getActivity(),
+                            new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION,android.Manifest.permission.ACCESS_COARSE_LOCATION},
+                            1);
+
+                }
+            }
+        }
+        LocationServices.FusedLocationApi.requestLocationUpdates(locationApi, mLocationRequest, this);
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(locationApi);
+        String longitude = Double.toString(mLastLocation.getLongitude());
+        String latitude = Double.toString(mLastLocation.getLatitude());
+
+        editor.putString("pastLatitude",longitude);
+        editor.putString("pastLongitude",latitude);
+
+        editor.apply();
     }
 }
