@@ -180,7 +180,7 @@ public class MainActivity extends AppCompatActivity implements VenueDetailListFr
         if (requestCode == ADD_INFO_CODE) {
             Log.d(TAG, "correct code");
             // Make sure the request was successful
-            if(data != null) {
+            if (data != null) {
                 Log.d(TAG, "Returned ok from activity");
                 if (data.getBooleanExtra(tempVenue.HAS_EPI_PENS, false)) {
                     tempVenue.setEpiPen(new Reliability(0, 0));
@@ -192,27 +192,26 @@ public class MainActivity extends AppCompatActivity implements VenueDetailListFr
                 if (data.getBooleanExtra(tempVenue.HAS_BATHROOMS, false)) {
                     tempVenue.setBathrooms(new Reliability(0, 0));
                 }
-                if(data.getBooleanExtra("parking",false)){
+                if (data.getBooleanExtra("parking", false)) {
                     //insert network call
                     Log.d(TAG, "parking working");
                 }
-                if(data.getBooleanExtra("ramp",false)){
+                if (data.getBooleanExtra("ramp", false)) {
                     //insert networkcall
                     Log.d(TAG, "ramps working");
                 }
-                if(data.getBooleanExtra("doors",false)){
+                if (data.getBooleanExtra("doors", false)) {
                     //network call
                     Log.d(TAG, "doors working");
                 }
-            }else if(requestCode == ADD_VENUE_CODE){
-                Log.d(TAG, "venue code");
-                if(data != null) {
-                    Log.d(TAG, "intent was not null and name was " + data.getStringExtra("venue name"));
-
-                    data.getStringExtra("venue name");
-                }
             }
+        } else if (requestCode == ADD_VENUE_CODE) {
+            Log.d(TAG, "venue code");
+            if (data != null) {
+                Log.d(TAG, "intent was not null and name was " + data.getStringExtra("venue name"));
 
+                data.getStringExtra("venue name");
+            }
         }
     }
     private void startLocationMonitoring() {
