@@ -4,6 +4,7 @@ package com.a1403.aditumall;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
@@ -29,14 +30,17 @@ import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.Geofence;
+import com.google.android.gms.location.GeofencingRequest;
+import com.google.android.gms.location.LocationServices;
 
-import java.util.ArrayList;
-
-public class MainActivity
-        extends AppCompatActivity
-        implements VenueDetailListFragment.OnListFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements VenueDetailListFragment.OnListFragmentInteractionListener {
     public static FragmentManager fragmentManager;
     private final int ADD_INFO_CODE = 1;
+    private final int ADD_VENUE_CODE = 2;
     GoogleApiClient googleApiClient = null;
     private double lat = 0;
     private double longt = 0;
@@ -125,7 +129,10 @@ public class MainActivity
                 SwitchToMap();
                 return true;
             case R.id.addInfoButton:
-                switchToAdd();
+                switchToAddInfo();
+                return true;
+            case R.id.addVenueButton:
+                switchToAddVenue();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -137,9 +144,9 @@ public class MainActivity
      * */
     private void SwitchToMap() {
         Intent i = new Intent(MainActivity.this, FullMap.class);
-        startActivityForResult(i,ADD_INFO_CODE);
+        startActivity(i);
     }
-    private void switchToAdd(){
+    private void switchToAddInfo(){
         Intent i = new Intent(MainActivity.this, AddAccessibilityInfoActivity.class);
         if(tempVenue.getEpiPen() == null){
             i.putExtra(tempVenue.HAS_EPI_PENS,false);
@@ -157,6 +164,10 @@ public class MainActivity
             i.putExtra(tempVenue.HAS_BATHROOMS,true);
         }
         startActivityForResult(i,ADD_INFO_CODE);
+    }
+    private void switchToAddVenue() {
+        Intent i = new Intent(MainActivity.this, AddVenueMap.class);
+        startActivityForResult(i,ADD_VENUE_CODE);
     }
     @Override
     public void onSelectedAP(AccessibilityPoint ap) {
@@ -192,6 +203,13 @@ public class MainActivity
                 if(data.getBooleanExtra("doors",false)){
                     //network call
                     Log.d(TAG, "doors working");
+                }
+            }else if(requestCode == ADD_VENUE_CODE){
+                Log.d(TAG, "venue code");
+                if(data != null) {
+                    Log.d(TAG, "intent was not null and name was " + data.getStringExtra("venue name"));
+
+                    data.getStringExtra("venue name");
                 }
             }
 
@@ -272,5 +290,51 @@ public class MainActivity
             Log.d(TAG, "SecurityException - " + e.getMessage());
         }
     }
+    public void addGeofence(
+            String geofenceId, double lat, double lon, float rad, GoogleApiClient googleApiClient) {
+        Log.d(TAG, "startMonitoring called");
+        try {
+            // googleApiClient.connect();
+
+            Geofence geofence = new Geofence.Builder()
+                    .setRequestId(geofenceId)
+                    .setCircularRegion(lat,lon,rad) // lat, long, radius
+                    .setExpirationDuration(Geofence.NEVER_EXPIRE)
+                    .setNotificationResponsiveness(350) // time in ms to respond to event
+                    // Events that raise actions
+                    .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT)
+                    .build();
+
+            // Request object
+            // Video mentions a variation that allows multiple geos grouped into one request
+            GeofencingRequest geofenceRequest = new GeofencingRequest.Builder()
+                    // If the device is already in geofence, this will cause entry transition to fire
+                    .setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER)
+                    .addGeofence(geofence).build();
+
+            // Need to instantiate intent and set it up as pending intent for future use.
+            Intent intent = new Intent(this, GeofenceNotify.class);
+            PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            if (!googleApiClient.isConnected()) {
+                Log.d(TAG, "GoogleApiClient is not connected");
+            } else {
+                LocationServices.GeofencingApi.addGeofences(googleApiClient, geofenceRequest, pendingIntent)
+                        .setResultCallback(new ResultCallback<Status>() {
+                            @Override
+                            public void onResult(Status status) {
+                                if (status.isSuccess()) {
+                                    Log.d(TAG, "Successfully added geofence");
+                                } else {
+                                    Log.d(TAG, "Failed to add geofence + " + status.getStatus());
+                                }
+                            }
+                        });
+            }
+        } catch (SecurityException e) {
+            Log.d(TAG, "SecurityException - " + e.getMessage());
+        }
+    }
+
 }
 

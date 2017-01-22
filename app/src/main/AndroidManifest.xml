@@ -49,9 +49,13 @@
         <activity
             android:name=".AddAccessibilityInfoActivity"
             android:label="@string/title_activity_add_accessibility_info"/>
-        <activity
+        <activty
             android:name=".AddMarkerMap"
-            android:label="@string/title_activity_add_marker_map"/>
+            android:label="@string/title_activity_add_marker_map"
+            android:theme="@style/AppTheme">/>
+            android:label="@string/title_activity_full_map"/>
+        <activity android:name=".AddVenueMap"
+            android:label="@string/title_activity_add_venue_map"/>
         <service
             android:name=".GeofenceNotify"
             android:exported="false"/>
