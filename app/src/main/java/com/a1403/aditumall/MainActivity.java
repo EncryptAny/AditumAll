@@ -38,8 +38,8 @@ public class MainActivity
     public static FragmentManager fragmentManager;
     private final int ADD_INFO_CODE = 1;
     GoogleApiClient googleApiClient = null;
-    private double lat;
-    private double longt;
+    private double lat = 0;
+    private double longt = 0;
     private String GEOFENCE_ID = "TestGeofence";
     MapsActivity mapFragment;
     Venue tempVenue;
@@ -214,8 +214,12 @@ public class MainActivity
                             Log.d(TAG, "Location updated lat/long " +
                                     location.getLatitude() + " " + location.getLongitude());
                             if (location != null) {
-                                lat = location.getLatitude();
-                                longt = location.getLongitude();
+                                if (lat == 0 && longt == 0)
+                                {
+                                    lat = location.getLatitude();
+                                    longt = location.getLongitude();
+                                    startGeofenceMonitoring();
+                                }
                             }
                         }
                     });
@@ -267,43 +271,6 @@ public class MainActivity
         } catch (SecurityException e) {
             Log.d(TAG, "SecurityException - " + e.getMessage());
         }
-    }
-
-    private void stopGeofenceMonitoring() {
-        Log.d(TAG, "stopMonitoring called");
-        ArrayList<String> geofenceIds = new ArrayList<String>();
-        geofenceIds.add(GEOFENCE_ID);
-        LocationServices.GeofencingApi.removeGeofences(googleApiClient, geofenceIds);
-    }
-
-    private void onEnterSpace() {
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.drawable.map_pin)
-                        .setContentTitle("Entered Geofence!")
-                        .setContentText("Entered Geofence!");
-        // Creates an explicit intent for an Activity in your app
-        Intent resultIntent = new Intent(this, MainActivity.class);
-
-        // The stack builder object will contain an artificial back stack for the
-        // started Activity.
-        // This ensures that navigating backward from the Activity leads out of
-        // your application to the Home screen.
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-        // Adds the back stack for the Intent (but not the Intent itself)
-        stackBuilder.addParentStack(MainActivity.class);
-        // Adds the Intent that starts the Activity to the top of the stack
-        stackBuilder.addNextIntent(resultIntent);
-        PendingIntent resultPendingIntent =
-                stackBuilder.getPendingIntent(
-                        0,
-                        PendingIntent.FLAG_UPDATE_CURRENT
-                );
-        mBuilder.setContentIntent(resultPendingIntent);
-        NotificationManager mNotificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        // mId allows you to update the notification later on.
-        mNotificationManager.notify(1337, mBuilder.build());
     }
 }
 
