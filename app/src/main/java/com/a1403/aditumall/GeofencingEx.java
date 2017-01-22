@@ -45,7 +45,6 @@ public class GeofencingEx extends AppCompatActivity implements GeofenceService.G
 
     GoogleApiClient googleApiClient = null;
 
-    private Button startLocationMonitoring;
     private Button startGeofenceMonitoring;
     private Button stopGeofenceMonitoring;
 
@@ -53,14 +52,6 @@ public class GeofencingEx extends AppCompatActivity implements GeofenceService.G
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_geofencing_ex);
-
-        startLocationMonitoring = (Button) findViewById(R.id.startLocationMonitoring);
-        startLocationMonitoring.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startLocationMonitoring();
-            }
-        });
 
         startGeofenceMonitoring = (Button) findViewById(R.id.startGeofenceMonitoring);
         startGeofenceMonitoring.setOnClickListener(new View.OnClickListener() {
@@ -161,33 +152,6 @@ public class GeofencingEx extends AppCompatActivity implements GeofenceService.G
         //GeofenceService.unregisterGeofenceListener();
         super.onStop();
         //googleApiClient.disconnect();
-    }
-
-    private void startLocationMonitoring() {
-        // Defines properties around getting location updates (location req params)
-        Log.d(TAG, "startLocation called");
-        try {
-            LocationRequest locationRequest = LocationRequest.create()
-                    .setInterval(1000) // rate of updates
-                    .setFastestInterval(100) // maximum rate of updates triggered by other apps
-                    // .setNumUpdates(5) // can specify the number of updates to get (not needed)
-                    .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY); // Suggests accuracy (RIP battery)
-            // Ask for location updates
-            LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient,
-                    locationRequest, new LocationListener() {
-                @Override
-                public void onLocationChanged(Location location) {
-                    Log.d(TAG, "Location updated lat/long " +
-                            location.getLatitude() + " " + location.getLongitude());
-                    if (location != null) {
-                        lat = location.getLatitude();
-                        longt = location.getLongitude();
-                    }
-                }
-                    });
-        } catch (SecurityException e) {
-            Log.d(TAG, "SecurityException - " + e.getMessage());
-        }
     }
 
     private void startGeofenceMonitoring() {

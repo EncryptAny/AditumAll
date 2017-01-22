@@ -45,9 +45,7 @@
 
         <activity
             android:name=".FullMap"
-            android:label="@string/title_activity_full_map" />
-        <activity android:name=".GeofencingEx"></activity>
-        <service android:name=".GeofenceService" android:exported="true" android:enabled="true"/>
+            android:label="@string/title_activity_full_map"></activity>
     </application>
 
 </manifest>
