@@ -12,8 +12,11 @@ import android.view.ViewGroup;
 
 import com.a1403.aditumall.adapters.AccessibilityPointRecyclerViewAdapter;
 import com.a1403.aditumall.model.AccessibilityPoint;
+import com.a1403.aditumall.model.DummyData;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -48,10 +51,7 @@ public class VenueDetailListFragment extends Fragment {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            List<AccessibilityPoint> aps = new ArrayList<>();
-            for (int i=0; i!=10; ++i) {
-                aps.add(new AccessibilityPoint("Really Great Point " + (i+1), (int)(Math.random() * 100), (int)(Math.random() * 100)));
-            }
+            List<AccessibilityPoint> aps = Arrays.asList(DummyData.getDummyAps());
 
 
             recyclerView.setAdapter(new AccessibilityPointRecyclerViewAdapter(aps, mListener));
