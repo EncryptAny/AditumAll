@@ -52,6 +52,8 @@ public class AddVenueMap extends FragmentActivity implements OnMapReadyCallback,
 
     SeekBar seekBar1;
 
+    private int radius;
+
     CircleOptions currentCircle;
 
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
@@ -100,6 +102,7 @@ public class AddVenueMap extends FragmentActivity implements OnMapReadyCallback,
 
                 Intent returnedIntent = new Intent();
                 returnedIntent.putExtra("venue name", venueName.getText().toString());
+                returnedIntent.putExtra("geoRadius", radius);
                 returnedIntent.putExtra("longitude from marker", longitude);
                 returnedIntent.putExtra("latitude from marker", latitude);
                 setResult(2,returnedIntent);
@@ -316,7 +319,7 @@ public class AddVenueMap extends FragmentActivity implements OnMapReadyCallback,
         TextView radiusText = (TextView) findViewById(R.id.radiusText);
         radiusText.setText("Radius: " + Integer.toString(progress));
         Log.d(TAG, Double.toString(getPastLocation().latitude));
-
+        radius = progress;
         currentCircle.radius(progress);
         //mMap.addCircle(new CircleOptions().center(getPastLocation()).radius(progress).strokeColor(Color.RED).fillColor(Color.BLUE));
 

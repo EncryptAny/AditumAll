@@ -1,6 +1,7 @@
 package com.a1403.aditumall;
 
 
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
@@ -13,6 +14,12 @@ import android.support.v7.app.AppCompatActivity;
 import com.a1403.aditumall.model.AccessibilityPoint;
 import com.a1403.aditumall.model.Reliability;
 import com.a1403.aditumall.model.Venue;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.Geofence;
+import com.google.android.gms.location.GeofencingRequest;
+import com.google.android.gms.location.LocationServices;
 
 public class MainActivity extends AppCompatActivity implements VenueDetailListFragment.OnListFragmentInteractionListener {
     public static FragmentManager fragmentManager;
@@ -154,6 +161,51 @@ public class MainActivity extends AppCompatActivity implements VenueDetailListFr
 
                 data.getStringExtra("venue name");
             }
+        }
+    }
+    public void addGeofence(
+            String geofenceId, double lat, double lon, float rad, GoogleApiClient googleApiClient) {
+        Log.d(TAG, "startMonitoring called");
+        try {
+            // googleApiClient.connect();
+
+            Geofence geofence = new Geofence.Builder()
+                    .setRequestId(geofenceId)
+                    .setCircularRegion(lat,lon,rad) // lat, long, radius
+                    .setExpirationDuration(Geofence.NEVER_EXPIRE)
+                    .setNotificationResponsiveness(350) // time in ms to respond to event
+                    // Events that raise actions
+                    .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT)
+                    .build();
+
+            // Request object
+            // Video mentions a variation that allows multiple geos grouped into one request
+            GeofencingRequest geofenceRequest = new GeofencingRequest.Builder()
+                    // If the device is already in geofence, this will cause entry transition to fire
+                    .setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER)
+                    .addGeofence(geofence).build();
+
+            // Need to instantiate intent and set it up as pending intent for future use.
+            Intent intent = new Intent(this, GeofenceNotify.class);
+            PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            if (!googleApiClient.isConnected()) {
+                Log.d(TAG, "GoogleApiClient is not connected");
+            } else {
+                LocationServices.GeofencingApi.addGeofences(googleApiClient, geofenceRequest, pendingIntent)
+                        .setResultCallback(new ResultCallback<Status>() {
+                            @Override
+                            public void onResult(Status status) {
+                                if (status.isSuccess()) {
+                                    Log.d(TAG, "Successfully added geofence");
+                                } else {
+                                    Log.d(TAG, "Failed to add geofence + " + status.getStatus());
+                                }
+                            }
+                        });
+            }
+        } catch (SecurityException e) {
+            Log.d(TAG, "SecurityException - " + e.getMessage());
         }
     }
 }
