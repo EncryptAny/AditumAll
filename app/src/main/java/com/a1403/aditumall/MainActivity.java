@@ -65,7 +65,26 @@ public class MainActivity
             //add the fragment to the content_my framelayout
             getSupportFragmentManager().beginTransaction().add(R.id.contentContainer,mapFragment).commit();
 
+            googleApiClient = new GoogleApiClient.Builder(this)
+                    .addApi(LocationServices.API)
+                    .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
+                        @Override
+                        public void onConnected(Bundle bundle) {
+                            Log.d(TAG, "Connected to GoogleApiClient");
+                            startLocationMonitoring();
+                        }
 
+                        @Override
+                        public void onConnectionSuspended(int i) {
+                            Log.d(TAG, "Suspended connection to GoogleApiClient");
+                        }
+                    })
+                    .addOnConnectionFailedListener(new GoogleApiClient.OnConnectionFailedListener() {
+                        @Override
+                        public void onConnectionFailed(ConnectionResult result) {
+                            Log.d(TAG, "Failed to connect to GoogleApiClient - " + result.getErrorMessage());
+                        }
+                    }).build();
         }else{
 
         }
@@ -73,12 +92,12 @@ public class MainActivity
     @Override
     public void onResume() {
         super.onResume();
-        tempVenue = new Venue("45abnfe", "test",null,new Reliability(3,3),new Reliability(4,5), new Reliability(5,5));        int response = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this);
+        tempVenue = new Venue("45abnfe", "test",null,new Reliability(3,3),new Reliability(4,5), new Reliability(5,5));
+        int response = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this);
         if (response != ConnectionResult.SUCCESS) {
             Log.d(TAG, "Google Play Services not available - show dialog to ask user to download it");
             GoogleApiAvailability.getInstance().getErrorDialog(this, response, 1).show();
         } else {
-            Log.d(TAG, "Google Play Services is available - no action required");
         }
     }
 
