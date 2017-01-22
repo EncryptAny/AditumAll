@@ -88,7 +88,7 @@ public class AddVenueMap extends FragmentActivity implements OnMapReadyCallback,
         } else {
 
         }
-
+        radius = 35;
         seekBar1=(SeekBar)findViewById(R.id.seekBar1);
         seekBar1.setOnSeekBarChangeListener(this);
         seekBar1.setProgress(20);

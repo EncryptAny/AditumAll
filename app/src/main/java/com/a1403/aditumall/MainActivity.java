@@ -201,7 +201,9 @@ public class MainActivity extends AppCompatActivity implements VenueDetailListFr
             Log.d(TAG, "venue code");
             if (data != null) {
                 Log.d(TAG, "intent was not null and name was " + data.getStringExtra("venue name"));
-
+                Log.d(TAG, "latitude " + data.getDoubleExtra("longitude from marker",0));
+                Log.d(TAG, "longitude " + data.getDoubleExtra("latitude from marker",0));
+                Log.d(TAG, "radius " + data.getIntExtra("geoRadius",0));
                 data.getStringExtra("venue name");
                 addGeofence("test",data.getDoubleExtra("longitude from marker",0),data.getDoubleExtra("latitude from marker",0),data.getIntExtra("geoRadius",0),googleApiClient);
             }
