@@ -46,6 +46,9 @@
         <activity
             android:name=".FullMap"
             android:label="@string/title_activity_full_map"></activity>
+        <service
+            android:name=".GeofenceNotify"
+            android:exported="false"/>
     </application>
 
 </manifest>
