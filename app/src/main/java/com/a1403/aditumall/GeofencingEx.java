@@ -26,6 +26,7 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
 import java.security.Security;
+import java.util.ArrayList;
 
 public class GeofencingEx extends AppCompatActivity {
 
@@ -212,6 +213,9 @@ public class GeofencingEx extends AppCompatActivity {
     }
 
     private void stopGeofenceMonitoring() {
-
+        Log.d(TAG, "stopMonitoring called");
+        ArrayList<String> geofenceIds = new ArrayList<String>();
+        geofenceIds.add(GEOFENCE_ID);
+        LocationServices.GeofencingApi.removeGeofences(googleApiClient, geofenceIds);
     }
 }
