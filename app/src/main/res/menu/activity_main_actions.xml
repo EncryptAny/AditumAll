@@ -4,6 +4,11 @@
     <item android:id="@+id/fullMapButton"
         android:icon="@drawable/cast_ic_expanded_controller_play"
         android:title="@string/action_map"
-        android:showAsAction="never"
+        android:showAsAction="ifRoom"
+        tools:ignore="AppCompatResource" />
+    <item android:id="@+id/addInfoButton"
+        android:icon="@drawable/cast_ic_expanded_controller_play"
+        android:title="@string/add_info"
+        android:showAsAction="ifRoom"
         tools:ignore="AppCompatResource" />
 </menu>

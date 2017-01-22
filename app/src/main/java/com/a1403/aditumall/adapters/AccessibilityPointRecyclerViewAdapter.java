@@ -1,4 +1,4 @@
-package com.a1403.aditumall;
+package com.a1403.aditumall.adapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.a1403.aditumall.R;
 import com.a1403.aditumall.VenueDetailListFragment.OnListFragmentInteractionListener;
 import com.a1403.aditumall.model.AccessibilityPoint;
 
@@ -25,7 +26,7 @@ public class AccessibilityPointRecyclerViewAdapter extends RecyclerView.Adapter<
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_item, parent, false);
+                .inflate(R.layout.fragment_venue_detail_list_item, parent, false);
         return new ViewHolder(view);
     }
 

@@ -10,4 +10,4 @@
     android:layout_marginRight="16dp"
     app:layoutManager="LinearLayoutManager"
     tools:context="com.a1403.aditumall.VenueDetailListFragment"
-    tools:listitem="@layout/fragment_item" />
+    tools:listitem="@layout/fragment_venue_detail_list_item" />
