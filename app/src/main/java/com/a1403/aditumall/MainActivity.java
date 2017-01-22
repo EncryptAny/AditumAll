@@ -113,18 +113,31 @@ public class MainActivity extends AppCompatActivity implements VenueDetailListFr
         if (requestCode == ADD_INFO_CODE) {
             Log.d(TAG, "correct code");
             // Make sure the request was successful
-
+            if(data != null) {
                 Log.d(TAG, "Returned ok from activity");
-                if(data.getBooleanExtra(tempVenue.HAS_EPI_PENS,false)){
-                    tempVenue.setEpiPen(new Reliability(0,0));
+                if (data.getBooleanExtra(tempVenue.HAS_EPI_PENS, false)) {
+                    tempVenue.setEpiPen(new Reliability(0, 0));
                     Log.d(TAG, "EPI PEN ADDED.");
                 }
-                if(data.getBooleanExtra(tempVenue.HAS_AED,false)){
-                    tempVenue.setAed(new Reliability(0,0));
+                if (data.getBooleanExtra(tempVenue.HAS_AED, false)) {
+                    tempVenue.setAed(new Reliability(0, 0));
                 }
-                if(data.getBooleanExtra(tempVenue.HAS_BATHROOMS,false)){
-                    tempVenue.setBathrooms(new Reliability(0,0));
+                if (data.getBooleanExtra(tempVenue.HAS_BATHROOMS, false)) {
+                    tempVenue.setBathrooms(new Reliability(0, 0));
                 }
+                if(data.getBooleanExtra("parking",false)){
+                    //insert network call
+                    Log.d(TAG, "parking working");
+                }
+                if(data.getBooleanExtra("ramp",false)){
+                    //insert networkcall
+                    Log.d(TAG, "ramps working");
+                }
+                if(data.getBooleanExtra("doors",false)){
+                    //network call
+                    Log.d(TAG, "doors working");
+                }
+            }
 
         }
     }

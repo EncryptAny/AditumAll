@@ -48,11 +48,11 @@
             android:label="@string/title_activity_full_map" />
         <activity
             android:name=".AddAccessibilityInfoActivity"
-            android:label="@string/title_activity_add_accessibility_info"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:label="@string/title_activity_add_accessibility_info"/>
         <activity
             android:name=".AddMarkerMap"
-            android:label="@string/title_activity_add_marker_map"></activity>
+            android:label="@string/title_activity_add_marker_map"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>

@@ -88,13 +88,42 @@ public class AddAccessibilityInfoActivity extends AppCompatActivity {
             i4.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent forwardIntent = new Intent();
+                    Intent forwardIntent = new Intent(AddAccessibilityInfoActivity.this, AddMarkerMap.class);
+                    forwardIntent.putExtra("parking", true);
                     forwardIntent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
                     startActivity(forwardIntent);
                     finish();
                 }
             });
-            accessName4.setText("Has Disabled Parking");
+            accessName4.setText("Has Disabled Parking?");
+
+            View i5 = findViewById(R.id.list_item_5);
+            TextView accessName5 = (TextView) i5.findViewById(R.id.accessName);
+            i5.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent forwardIntent = new Intent(AddAccessibilityInfoActivity.this, AddMarkerMap.class);
+                    forwardIntent.putExtra("ramp", true);
+                    forwardIntent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+                    startActivity(forwardIntent);
+                    finish();
+                }
+            });
+            accessName5.setText("Has Ramp?");
+
+            View i6 = findViewById(R.id.list_item_6);
+            TextView accessName6 = (TextView) i6.findViewById(R.id.accessName);
+            i6.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent forwardIntent = new Intent(AddAccessibilityInfoActivity.this, AddMarkerMap.class);
+                    forwardIntent.putExtra("doors", true);
+                    forwardIntent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+                    startActivity(forwardIntent);
+                    finish();
+                }
+            });
+            accessName6.setText("Has Disability Accessible Doors?");
 
         }
 

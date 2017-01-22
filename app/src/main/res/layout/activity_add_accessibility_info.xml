@@ -27,8 +27,5 @@
         <include
             android:id="@+id/list_item_6"
             layout="@layout/activity_add_accessiblity_info_item"/>
-        <include
-            android:id="@+id/list_item_7"
-            layout="@layout/activity_add_accessiblity_info_item"/>
     </LinearLayout>
 </ScrollView>

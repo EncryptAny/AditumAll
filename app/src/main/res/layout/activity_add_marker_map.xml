@@ -1,8 +1,27 @@
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:map="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/map"
-    android:name="com.google.android.gms.maps.SupportMapFragment"
+    android:id="@+id/activity_add_marker_map"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.a1403.aditumall.AddMarkerMap" />
+    tools:context="com.a1403.aditumall.AddMarkerMap">
+
+    <include
+        android:id="@+id/map_container"
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        layout="@layout/add_marker_map_fragment"
+        tools:context="com.a1403.aditumall.AddMarkerMap"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:text="Done Adding Marker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/done_adding_marker_button"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="86dp" />
+</RelativeLayout>
