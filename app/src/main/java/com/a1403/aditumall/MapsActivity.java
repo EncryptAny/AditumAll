@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.a1403.aditumall.model.Venue;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -42,6 +43,7 @@ public class MapsActivity extends Fragment implements GoogleApiClient.Connection
     private GoogleMap mGoogleMap;
     private GoogleApiClient locationApi;
     private LocationRequest mLocationRequest;
+    private Venue venue;
     Location mLastLocation;
     public static final String TAG = MapsActivity.class.getSimpleName();
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
@@ -75,7 +77,9 @@ public class MapsActivity extends Fragment implements GoogleApiClient.Connection
 
         mMapView.onResume();
 
+        MainActivity currentActivity = (MainActivity) getActivity();
 
+        venue = currentActivity.getVenue();
 
         /*mLocationRequest = LocationRequest.create()
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
@@ -97,13 +101,14 @@ public class MapsActivity extends Fragment implements GoogleApiClient.Connection
                 @Override
                 public void onMapReady(GoogleMap googleMap) {
                     mMap = googleMap;
+                    LatLng dummy = new LatLng(venue.getLat(),venue.getLongt());
+                    Log.i(TAG, "Lat " + Double.toString(venue.getLat()) );
                     LatLng pastLocation = getPastLocation();
                     if(mMap != null) {
-                        if (!pastLocation.equals(new LatLng(0, 0))) {
-                            CameraPosition cameraPosition = new CameraPosition.Builder().target(pastLocation).zoom(15.0f).build();
+                            CameraPosition cameraPosition = new CameraPosition.Builder().target(dummy).zoom(17.0f).build();
                             CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
                             mMap.moveCamera(cameraUpdate);
-                        }
+                            mMap.addMarker(new MarkerOptions().position(dummy).title("Current Venue"));
                     }
                 }
             });
@@ -145,7 +150,7 @@ public class MapsActivity extends Fragment implements GoogleApiClient.Connection
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         Log.i(TAG, "Location services connected.");
-        setCurrentLocation();
+        //setCurrentLocation();
 
     }
 
@@ -180,7 +185,9 @@ public class MapsActivity extends Fragment implements GoogleApiClient.Connection
     }
     private void mapSetUp(){
         if(mMap != null) {
-            mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
+            LatLng dummy = new LatLng(venue.getLat(),venue.getLongt());
+
+            mMap.addMarker(new MarkerOptions().position(dummy).title("Current Venue"));
         }
     }
     private void handleNewLocation(Location location){
@@ -188,12 +195,13 @@ public class MapsActivity extends Fragment implements GoogleApiClient.Connection
         double currentLatitude = location.getLatitude();
         double currentLongitude = location.getLongitude();
         LatLng latLng = new LatLng(currentLatitude, currentLongitude);
+        LatLng dummy = new LatLng(venue.getLat(),venue.getLongt());
         MarkerOptions options = new MarkerOptions()
-                .position(latLng)
+                .position(dummy)
                 .title("I am here!");
 
         mMap.addMarker(options);
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(dummy));
     }
     synchronized void buildGoogleApiClient() {
         locationApi = new GoogleApiClient.Builder(getActivity())

@@ -59,7 +59,10 @@ public class MainActivity extends AppCompatActivity implements VenueDetailListFr
             //pass the intent's extra's to the fragment as arguments
             mapFragment.setArguments(getIntent().getExtras());
 
-            tempVenue = DummyData.getDummyVenue_Libwest();
+            if(geoFenceId == null) {
+                tempVenue = DummyData.getDummyVenue_Libwest();
+            }else{
+            }
             //add the fragment to the content_my framelayout
             getSupportFragmentManager().beginTransaction().add(R.id.contentContainer,mapFragment).commit();
 
@@ -283,6 +286,9 @@ public class MainActivity extends AppCompatActivity implements VenueDetailListFr
         } catch (SecurityException e) {
             Log.d(TAG, "SecurityException - " + e.getMessage());
         }
+    }
+    public Venue getVenue(){
+        return tempVenue;
     }
 
 }

@@ -9,12 +9,30 @@ public class Venue {
 
     private String venueId;
     private String name;
+
+    public double getLat() {
+        return lat;
+    }
+
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
+
+    public double getLongt() {
+        return longt;
+    }
+
+    public void setLongt(double longt) {
+        this.longt = longt;
+    }
+
+
+    private double longt;
     private AccessibilityPoint aps[];
     private Reliability epiPen;
     private Reliability aed;
     private Reliability bathrooms;
     private double lat;
-    private double lon;
 
     public static final String HAS_EPI_PENS = "has epi pens";
     public static final String HAS_AED = "has aed";
@@ -28,6 +46,8 @@ public class Venue {
         this.epiPen = epi;
         this.aed = aed;
         this.bathrooms = bathrooms;
+        this.lat = lat;
+        this.longt = lon;
     }
 
     public String getVenueId() {

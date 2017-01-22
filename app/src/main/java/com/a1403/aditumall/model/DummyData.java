@@ -17,6 +17,6 @@ public class DummyData {
     }
 
     public static Venue getDummyVenue_Libwest() {
-        return new Venue("lw","Library West", getDummyAps(),null,null,new Reliability(14,1),29.6251489,-82.342921);
+        return new Venue("lw","Library West", getDummyAps(),null,null,new Reliability(14,1),29.651489,-82.342921);
     }
 }
