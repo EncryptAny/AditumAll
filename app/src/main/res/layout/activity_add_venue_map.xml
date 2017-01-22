@@ -10,11 +10,11 @@
     <include
         android:id="@+id/venue_map_container"
         android:layout_width="match_parent"
-        android:layout_height="400dp"
+        android:layout_height="350dp"
         layout="@layout/add_venue_map_fragment"
         tools:context="com.a1403.aditumall.AddVenueMap"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true" />
+
+         />
 
     <SeekBar
         android:layout_width="match_parent"
@@ -31,5 +31,24 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="22dp"
         android:id="@+id/radiusText" />
+
+    <Button
+        android:text="Done Selecting Location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/seekBar1"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/venue_done_button" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:text="Name of Venue"
+        android:ems="10"
+        android:id="@+id/edit_venue_name"
+        android:layout_above="@+id/venue_done_button"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="16dp" />
 
 </RelativeLayout>

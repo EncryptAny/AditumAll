@@ -147,6 +147,13 @@ public class MainActivity extends AppCompatActivity implements VenueDetailListFr
                 }
             }
 
+        }else if(requestCode == ADD_VENUE_CODE){
+            Log.d(TAG, "venue code");
+            if(data != null) {
+                Log.d(TAG, "intent was not null and name was " + data.getStringExtra("venue name"));
+
+                data.getStringExtra("venue name");
+            }
         }
     }
 }

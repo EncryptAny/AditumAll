@@ -16,6 +16,7 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -88,6 +89,23 @@ public class AddVenueMap extends FragmentActivity implements OnMapReadyCallback,
 
         seekBar1=(SeekBar)findViewById(R.id.seekBar1);
         seekBar1.setOnSeekBarChangeListener(this);
+        seekBar1.setProgress(20);
+
+        final Button button = (Button) findViewById(R.id.venue_done_button);
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // Perform action on click
+
+                EditText venueName = (EditText) findViewById(R.id.edit_venue_name);
+
+                Intent returnedIntent = new Intent();
+                returnedIntent.putExtra("venue name", venueName.getText().toString());
+                returnedIntent.putExtra("longitude from marker", longitude);
+                returnedIntent.putExtra("latitude from marker", latitude);
+                setResult(2,returnedIntent);
+                finish();
+            }
+        });
 
 
         locationApi = new GoogleApiClient.Builder(this)
@@ -169,11 +187,12 @@ public class AddVenueMap extends FragmentActivity implements OnMapReadyCallback,
         Log.d(TAG, "map was called ready");
         if (mMap != null) {
             if (!pastLocation.equals(new LatLng(0, 0))) {
-                CameraPosition cameraPosition = new CameraPosition.Builder().target(pastLocation).zoom(15.0f).build();
+                CameraPosition cameraPosition = new CameraPosition.Builder().target(pastLocation).zoom(17.0f).build();
                 CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
                 mMap.moveCamera(cameraUpdate);
             }
             Log.d(TAG, "map was not null");
+
             mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
 
                 @Override
@@ -184,10 +203,10 @@ public class AddVenueMap extends FragmentActivity implements OnMapReadyCallback,
                     mMap.addMarker(new MarkerOptions().position(point));
                     longitude = point.longitude;
                     latitude = point.latitude;
+                    mMap.addCircle(currentCircle.center(point).strokeColor(Color.BLACK).fillColor(Color.BLUE).strokeWidth(2));
+
                 }
             });
-
-            mMap.addCircle(new CircleOptions().center(pastLocation).radius(25).strokeColor(Color.RED).fillColor(Color.BLUE));
 
         }
     }
@@ -225,6 +244,7 @@ public class AddVenueMap extends FragmentActivity implements OnMapReadyCallback,
             LocationServices.FusedLocationApi.requestLocationUpdates(locationApi, mLocationRequest, this);
         } else {
             handleNewLocation(location);
+            mMap.addCircle(currentCircle.center(new LatLng(location.getLatitude(),location.getLongitude())).radius(35).strokeColor(Color.BLACK).fillColor(Color.BLUE).strokeWidth(2));
         }
     }
 
@@ -278,6 +298,8 @@ public class AddVenueMap extends FragmentActivity implements OnMapReadyCallback,
 
         double currentLatitude = location.getLatitude();
         double currentLongitude = location.getLongitude();
+        latitude = currentLatitude;
+        longitude = currentLongitude;
         LatLng latLng = new LatLng(currentLatitude, currentLongitude);
 
         MarkerOptions options = new MarkerOptions()
@@ -294,8 +316,9 @@ public class AddVenueMap extends FragmentActivity implements OnMapReadyCallback,
         TextView radiusText = (TextView) findViewById(R.id.radiusText);
         radiusText.setText("Radius: " + Integer.toString(progress));
         Log.d(TAG, Double.toString(getPastLocation().latitude));
-        //currentCircle.radius(progress);
-        mMap.addCircle(new CircleOptions().center(getPastLocation()).radius(progress).strokeColor(Color.RED).fillColor(Color.BLUE));
+
+        currentCircle.radius(progress);
+        //mMap.addCircle(new CircleOptions().center(getPastLocation()).radius(progress).strokeColor(Color.RED).fillColor(Color.BLUE));
 
     }
 
