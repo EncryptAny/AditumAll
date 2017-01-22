@@ -13,12 +13,15 @@ public class Venue {
     private Reliability epiPen;
     private Reliability aed;
     private Reliability bathrooms;
+    private double lat;
+    private double lon;
 
     public static final String HAS_EPI_PENS = "has epi pens";
     public static final String HAS_AED = "has aed";
     public static final String HAS_BATHROOMS = "has bathrooms";
 
-    public Venue(String id, String name, AccessibilityPoint aps[], Reliability epi, Reliability aed,Reliability bathrooms){
+    public Venue(String id, String name, AccessibilityPoint aps[], Reliability epi,
+                 Reliability aed,Reliability bathrooms, double lat, double lon){
         this.venueId = id;
         this.name = name;
         this.aps = aps;

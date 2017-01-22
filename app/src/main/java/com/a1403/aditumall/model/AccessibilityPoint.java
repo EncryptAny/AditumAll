@@ -5,6 +5,8 @@ public class AccessibilityPoint {
     private int upvotes; //BACKEND
     private boolean upvoted;
     private int downvotes; //BACKEND
+    private double lat;
+    private double lon;
 
     public enum VoteStatus {
         NONE,
@@ -14,11 +16,13 @@ public class AccessibilityPoint {
 
     private VoteStatus voteStatus;
 
-    public AccessibilityPoint(String name, int upvotes, int downvotes) {
+    public AccessibilityPoint(String name, int upvotes, int downvotes, double lat, double lon) {
         this.name = name;
         this.upvotes = upvotes;
         this.downvotes = downvotes;
         this.voteStatus = VoteStatus.NONE;
+        this.lat = lat;
+        this.lon = lon;
     }
 
     public String getName() {

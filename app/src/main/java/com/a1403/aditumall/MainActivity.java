@@ -15,6 +15,7 @@ import android.view.MenuItem;
 
 import android.support.v7.app.AppCompatActivity;
 import com.a1403.aditumall.model.AccessibilityPoint;
+import com.a1403.aditumall.model.DummyData;
 import com.a1403.aditumall.model.Reliability;
 import com.a1403.aditumall.model.Venue;
 import com.google.android.gms.common.ConnectionResult;
@@ -58,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements VenueDetailListFr
             //pass the intent's extra's to the fragment as arguments
             mapFragment.setArguments(getIntent().getExtras());
 
-            tempVenue = new Venue("45abnfe", "test",null,new Reliability(3,3),new Reliability(4,5), new Reliability(5,5));
+            tempVenue = DummyData.getDummyVenue_Libwest();
             //add the fragment to the content_my framelayout
             getSupportFragmentManager().beginTransaction().add(R.id.contentContainer,mapFragment).commit();
 
@@ -92,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements VenueDetailListFr
         super.onResume();
         geoFenceId = getIntent().getStringExtra("geoFenceId");
         Log.d(TAG, "geofence ID is " + geoFenceId);
-        tempVenue = new Venue("45abnfe", "test",null,new Reliability(3,3),new Reliability(4,5), new Reliability(5,5));
+        tempVenue = DummyData.getDummyVenue_Libwest();
         int response = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this);
         if (response != ConnectionResult.SUCCESS) {
             Log.d(TAG, "Google Play Services not available - show dialog to ask user to download it");
