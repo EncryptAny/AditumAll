@@ -1,9 +1,15 @@
 package com.a1403.aditumall;
 
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -13,10 +19,28 @@ import android.support.v7.app.AppCompatActivity;
 import com.a1403.aditumall.model.AccessibilityPoint;
 import com.a1403.aditumall.model.Reliability;
 import com.a1403.aditumall.model.Venue;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.Geofence;
+import com.google.android.gms.location.GeofencingRequest;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 
-public class MainActivity extends AppCompatActivity implements VenueDetailListFragment.OnListFragmentInteractionListener {
+import java.util.ArrayList;
+
+public class MainActivity
+        extends AppCompatActivity
+        implements VenueDetailListFragment.OnListFragmentInteractionListener {
     public static FragmentManager fragmentManager;
     private final int ADD_INFO_CODE = 1;
+    GoogleApiClient googleApiClient = null;
+    private double lat;
+    private double longt;
+    private String GEOFENCE_ID = "TestGeofence";
     MapsActivity mapFragment;
     Venue tempVenue;
     public static final String TAG = MapsActivity.class.getSimpleName();
@@ -49,8 +73,21 @@ public class MainActivity extends AppCompatActivity implements VenueDetailListFr
     @Override
     public void onResume() {
         super.onResume();
-        tempVenue = new Venue("45abnfe", "test",null,new Reliability(3,3),new Reliability(4,5), new Reliability(5,5));
+        tempVenue = new Venue("45abnfe", "test",null,new Reliability(3,3),new Reliability(4,5), new Reliability(5,5));        int response = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this);
+        if (response != ConnectionResult.SUCCESS) {
+            Log.d(TAG, "Google Play Services not available - show dialog to ask user to download it");
+            GoogleApiAvailability.getInstance().getErrorDialog(this, response, 1).show();
+        } else {
+            Log.d(TAG, "Google Play Services is available - no action required");
+        }
+    }
 
+    // Controlling running location services in background
+    @Override
+    protected void onStart() {
+        Log.d(TAG, "onStart called");
+        super.onStart();
+        googleApiClient.reconnect();
     }
 
     @Override
@@ -140,6 +177,114 @@ public class MainActivity extends AppCompatActivity implements VenueDetailListFr
             }
 
         }
+    }
+    private void startLocationMonitoring() {
+        // Defines properties around getting location updates (location req params)
+        Log.d(TAG, "startLocation called");
+        try {
+            LocationRequest locationRequest = LocationRequest.create()
+                    .setInterval(1000) // rate of updates
+                    .setFastestInterval(100) // maximum rate of updates triggered by other apps
+                    // .setNumUpdates(5) // can specify the number of updates to get (not needed)
+                    .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY); // Suggests accuracy (RIP battery)
+            // Ask for location updates
+            LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient,
+                    locationRequest, new LocationListener() {
+                        @Override
+                        public void onLocationChanged(Location location) {
+                            Log.d(TAG, "Location updated lat/long " +
+                                    location.getLatitude() + " " + location.getLongitude());
+                            if (location != null) {
+                                lat = location.getLatitude();
+                                longt = location.getLongitude();
+                            }
+                        }
+                    });
+        } catch (SecurityException e) {
+            Log.d(TAG, "SecurityException - " + e.getMessage());
+        }
+    }
+
+    private void startGeofenceMonitoring() {
+        Log.d(TAG, "startMonitoring called");
+        try {
+            // googleApiClient.connect();
+
+            Geofence geofence = new Geofence.Builder()
+                    .setRequestId(GEOFENCE_ID)
+                    .setCircularRegion(lat,longt,35) // lat, long, radius
+                    .setExpirationDuration(Geofence.NEVER_EXPIRE)
+                    .setNotificationResponsiveness(350) // time in ms to respond to event
+                    // Events that raise actions
+                    .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT)
+                    .build();
+
+            // Request object
+            // Video mentions a variation that allows multiple geos grouped into one request
+            GeofencingRequest geofenceRequest = new GeofencingRequest.Builder()
+                    // If the device is already in geofence, this will cause entry transition to fire
+                    .setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER)
+                    .addGeofence(geofence).build();
+
+            // Need to instantiate intent and set it up as pending intent for future use.
+            Intent intent = new Intent(this, GeofenceNotify.class);
+            PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            if (!googleApiClient.isConnected()) {
+                Log.d(TAG, "GoogleApiClient is not connected");
+            } else {
+                LocationServices.GeofencingApi.addGeofences(googleApiClient, geofenceRequest, pendingIntent)
+                        .setResultCallback(new ResultCallback<Status>() {
+                            @Override
+                            public void onResult(Status status) {
+                                if (status.isSuccess()) {
+                                    Log.d(TAG, "Successfully added geofence");
+                                } else {
+                                    Log.d(TAG, "Failed to add geofence + " + status.getStatus());
+                                }
+                            }
+                        });
+            }
+        } catch (SecurityException e) {
+            Log.d(TAG, "SecurityException - " + e.getMessage());
+        }
+    }
+
+    private void stopGeofenceMonitoring() {
+        Log.d(TAG, "stopMonitoring called");
+        ArrayList<String> geofenceIds = new ArrayList<String>();
+        geofenceIds.add(GEOFENCE_ID);
+        LocationServices.GeofencingApi.removeGeofences(googleApiClient, geofenceIds);
+    }
+
+    private void onEnterSpace() {
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.drawable.map_pin)
+                        .setContentTitle("Entered Geofence!")
+                        .setContentText("Entered Geofence!");
+        // Creates an explicit intent for an Activity in your app
+        Intent resultIntent = new Intent(this, MainActivity.class);
+
+        // The stack builder object will contain an artificial back stack for the
+        // started Activity.
+        // This ensures that navigating backward from the Activity leads out of
+        // your application to the Home screen.
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        // Adds the back stack for the Intent (but not the Intent itself)
+        stackBuilder.addParentStack(MainActivity.class);
+        // Adds the Intent that starts the Activity to the top of the stack
+        stackBuilder.addNextIntent(resultIntent);
+        PendingIntent resultPendingIntent =
+                stackBuilder.getPendingIntent(
+                        0,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+        mBuilder.setContentIntent(resultPendingIntent);
+        NotificationManager mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        // mId allows you to update the notification later on.
+        mNotificationManager.notify(1337, mBuilder.build());
     }
 }
 
