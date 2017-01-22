@@ -19,4 +19,7 @@ public class DummyData {
     public static Venue getDummyVenue_Libwest() {
         return new Venue("lw","Library West", getDummyAps(),null,null,new Reliability(14,1),29.651489,-82.342921);
     }
+    public static Venue getDummyVenue_Marston() {
+        return new Venue("mstn","Marston", getDummyAps(),null,null,new Reliability(14,1),29.657,-82.3437903);
+    }
 }

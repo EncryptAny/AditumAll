@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements VenueDetailListFr
     private String geoFenceId;
     MapsActivity mapFragment;
     Venue tempVenue;
+
     public static final String TAG = MapsActivity.class.getSimpleName();
 
     @Override
@@ -62,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements VenueDetailListFr
             if(geoFenceId == null) {
                 tempVenue = DummyData.getDummyVenue_Libwest();
             }else{
+                tempVenue = DummyData.getDummyVenue_Marston();
             }
             //add the fragment to the content_my framelayout
             getSupportFragmentManager().beginTransaction().add(R.id.contentContainer,mapFragment).commit();
@@ -215,7 +217,7 @@ public class MainActivity extends AppCompatActivity implements VenueDetailListFr
                 Log.d(TAG, "latitude " + data.getDoubleExtra("latitude from marker",0));
                 Log.d(TAG, "radius " + data.getIntExtra("geoRadius",0));
                 data.getStringExtra("venue name");
-                addGeofence(data.getStringExtra("venue name"),data.getDoubleExtra("latitude from marker",0),data.getDoubleExtra("longitude from marker",0),data.getIntExtra("geoRadius",0),googleApiClient);
+                addGeofence(DummyData.getDummyVenue_Marston().getVenueId(),DummyData.getDummyVenue_Marston().getLat(),DummyData.getDummyVenue_Marston().getLongt(),35,googleApiClient);
             }
         }
     }
