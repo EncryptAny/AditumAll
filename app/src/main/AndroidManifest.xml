@@ -45,20 +45,25 @@
 
         <activity
             android:name=".FullMap"
-            android:label="@string/title_activity_full_map" />
+            android:label="@string/title_activity_full_map"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".AddAccessibilityInfoActivity"
-            android:label="@string/title_activity_add_accessibility_info"/>
+            android:label="@string/title_activity_add_accessibility_info"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".AddMarkerMap"
             android:label="@string/title_activity_add_marker_map"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".AddVenueMap"
-            android:label="@string/title_activity_add_venue_map"/>
+            android:label="@string/title_activity_add_venue_map"
+            android:screenOrientation="portrait"/>
         <service
             android:name=".GeofenceNotify"
-            android:exported="false"/>
+            android:exported="false"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>
