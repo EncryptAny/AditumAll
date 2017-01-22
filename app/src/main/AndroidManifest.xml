@@ -53,7 +53,9 @@
             android:name=".AddMarkerMap"
             android:label="@string/title_activity_add_marker_map"
             android:theme="@style/AppTheme"></activity>
-            android:label="@string/title_activity_full_map"></activity>
+            android:label="@string/title_activity_full_map"/>
+        <activity android:name=".AddVenueMap"
+            android:label="@string/title_activity_add_venue_map"/>
         <service
             android:name=".GeofenceNotify"
             android:exported="false"/>

@@ -17,6 +17,7 @@ import com.a1403.aditumall.model.Venue;
 public class MainActivity extends AppCompatActivity implements VenueDetailListFragment.OnListFragmentInteractionListener {
     public static FragmentManager fragmentManager;
     private final int ADD_INFO_CODE = 1;
+    private final int ADD_VENUE_CODE = 2;
     MapsActivity mapFragment;
     Venue tempVenue;
     public static final String TAG = MapsActivity.class.getSimpleName();
@@ -69,7 +70,10 @@ public class MainActivity extends AppCompatActivity implements VenueDetailListFr
                 SwitchToMap();
                 return true;
             case R.id.addInfoButton:
-                switchToAdd();
+                switchToAddInfo();
+                return true;
+            case R.id.addVenueButton:
+                switchToAddVenue();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -81,9 +85,9 @@ public class MainActivity extends AppCompatActivity implements VenueDetailListFr
      * */
     private void SwitchToMap() {
         Intent i = new Intent(MainActivity.this, FullMap.class);
-        startActivityForResult(i,ADD_INFO_CODE);
+        startActivity(i);
     }
-    private void switchToAdd(){
+    private void switchToAddInfo(){
         Intent i = new Intent(MainActivity.this, AddAccessibilityInfoActivity.class);
         if(tempVenue.getEpiPen() == null){
             i.putExtra(tempVenue.HAS_EPI_PENS,false);
@@ -101,6 +105,10 @@ public class MainActivity extends AppCompatActivity implements VenueDetailListFr
             i.putExtra(tempVenue.HAS_BATHROOMS,true);
         }
         startActivityForResult(i,ADD_INFO_CODE);
+    }
+    private void switchToAddVenue() {
+        Intent i = new Intent(MainActivity.this, AddVenueMap.class);
+        startActivityForResult(i,ADD_VENUE_CODE);
     }
     @Override
     public void onSelectedAP(AccessibilityPoint ap) {

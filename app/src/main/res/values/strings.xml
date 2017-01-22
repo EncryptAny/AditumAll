@@ -7,4 +7,6 @@
     <string name="title_activity_add_accessibility_info">AddAccessibilityInfo</string>
     <string name="add_info">Add Accessibility Info</string>
     <string name="title_activity_add_marker_map">Map</string>
+    <string name="title_activity_add_venue_map">Map</string>
+    <string name="add_venue">Add Venue</string>
 </resources>
