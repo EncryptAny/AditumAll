@@ -6,4 +6,9 @@
         android:title="@string/action_map"
         android:showAsAction="never"
         tools:ignore="AppCompatResource" />
+    <item android:id="@+id/geofenceButton"
+        android:icon="@drawable/cast_ic_expanded_controller_play"
+        android:title="Geofence"
+        android:showAsAction="never"
+        tools:ignore="AppCompatResource" />
 </menu>

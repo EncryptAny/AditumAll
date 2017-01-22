@@ -123,7 +123,7 @@ public class MapsActivity extends Fragment implements GoogleApiClient.Connection
     public void onPause() {
         super.onPause();
         mMapView.onPause();
-        savePastLocation();
+        //savePastLocation();
         if (locationApi.isConnected()) {
             locationApi.disconnect();
         }

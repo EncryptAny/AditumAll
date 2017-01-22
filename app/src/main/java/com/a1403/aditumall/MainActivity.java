@@ -54,6 +54,9 @@ public class MainActivity extends AppCompatActivity implements VenueDetailListFr
                 // search action
                 SwitchToMap();
                 return true;
+            case R.id.geofenceButton:
+                SwitchToGeo();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -64,6 +67,10 @@ public class MainActivity extends AppCompatActivity implements VenueDetailListFr
      * */
     private void SwitchToMap() {
         Intent i = new Intent(MainActivity.this, FullMap.class);
+        startActivity(i);
+    }
+    private void SwitchToGeo() {
+        Intent i = new Intent(MainActivity.this, GeofencingEx.class);
         startActivity(i);
     }
     @Override

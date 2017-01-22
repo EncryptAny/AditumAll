@@ -64,10 +64,11 @@ public class GeofencingEx extends AppCompatActivity {
         stopGeofenceMonitoring.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startGeofenceMonitoring();
+                stopGeofenceMonitoring();
             }
         });
         googleApiClient = new GoogleApiClient.Builder(this)
+            .addApi(LocationServices.API)
             .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
                 @Override
                 public void onConnected(Bundle bundle) {

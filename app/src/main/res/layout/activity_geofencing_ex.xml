@@ -13,25 +13,25 @@
     <Button
         android:text="Start Location Monitoring"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="438dp"
-        android:id="@+id/startLocationMonitoring" />
-
-    <Button
-        android:text="Start Geofence Monitoring"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="46dp"
-        android:id="@+id/startGeofenceMonitoring" />
+        android:id="@+id/startLocationMonitoring"
+        android:layout_height="wrap_content" />
 
     <Button
         android:text="Stop Geofence Monitoring"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/stopGeofenceMonitoring"
-        android:layout_below="@+id/startGeofenceMonitoring"
+        android:layout_centerVertical="true"
         android:layout_alignParentStart="true" />
+
+    <Button
+        android:text="Start Geofence Monitoring"
+        android:layout_width="wrap_content"
+        android:id="@+id/startGeofenceMonitoring"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/stopGeofenceMonitoring"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="64dp" />
 </RelativeLayout>
