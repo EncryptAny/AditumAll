@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity implements VenueDetailListFr
     GoogleApiClient googleApiClient = null;
     private double lat = 0;
     private double longt = 0;
-    private String GEOFENCE_ID = "TestGeofence";
+    private String geoFenceId;
     MapsActivity mapFragment;
     Venue tempVenue;
     public static final String TAG = MapsActivity.class.getSimpleName();
@@ -45,7 +45,8 @@ public class MainActivity extends AppCompatActivity implements VenueDetailListFr
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        geoFenceId = getIntent().getStringExtra("geoFenceId");
+        Log.d(TAG, "geofence ID is " + geoFenceId);
         if(findViewById(R.id.contentContainer) != null){
             if(savedInstanceState != null){
                 return;
@@ -89,6 +90,8 @@ public class MainActivity extends AppCompatActivity implements VenueDetailListFr
     @Override
     public void onResume() {
         super.onResume();
+        geoFenceId = getIntent().getStringExtra("geoFenceId");
+        Log.d(TAG, "geofence ID is " + geoFenceId);
         tempVenue = new Venue("45abnfe", "test",null,new Reliability(3,3),new Reliability(4,5), new Reliability(5,5));
         int response = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this);
         if (response != ConnectionResult.SUCCESS) {
@@ -103,6 +106,8 @@ public class MainActivity extends AppCompatActivity implements VenueDetailListFr
     protected void onStart() {
         Log.d(TAG, "onStart called");
         super.onStart();
+        geoFenceId = getIntent().getStringExtra("geoFenceId");
+        Log.d(TAG, "geofence ID is " + geoFenceId);
         googleApiClient.reconnect();
     }
 
@@ -202,11 +207,11 @@ public class MainActivity extends AppCompatActivity implements VenueDetailListFr
             Log.d(TAG, "venue code");
             if (data != null) {
                 Log.d(TAG, "intent was not null and name was " + data.getStringExtra("venue name"));
-                Log.d(TAG, "latitude " + data.getDoubleExtra("longitude from marker",0));
-                Log.d(TAG, "longitude " + data.getDoubleExtra("latitude from marker",0));
+                Log.d(TAG, "longitude " + data.getDoubleExtra("longitude from marker",0));
+                Log.d(TAG, "latitude " + data.getDoubleExtra("latitude from marker",0));
                 Log.d(TAG, "radius " + data.getIntExtra("geoRadius",0));
                 data.getStringExtra("venue name");
-                addGeofence("test",data.getDoubleExtra("latitude from marker",0),data.getDoubleExtra("longitude from marker",0),data.getIntExtra("geoRadius",0),googleApiClient);
+                addGeofence(data.getStringExtra("venue name"),data.getDoubleExtra("latitude from marker",0),data.getDoubleExtra("longitude from marker",0),data.getIntExtra("geoRadius",0),googleApiClient);
             }
         }
     }

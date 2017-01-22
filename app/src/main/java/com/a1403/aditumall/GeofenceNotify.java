@@ -52,11 +52,11 @@ public class GeofenceNotify extends IntentService {
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.map_pin)
-                        .setContentTitle(geofenceId)
+                        .setContentTitle("Accessible Location")
                         .setContentText("View accessibility information");
         // Creates an explicit intent for an Activity in your app
         Intent resultIntent = new Intent(this, MainActivity.class);
-
+        resultIntent.putExtra("geoFenceId", geofenceId);
         // The stack builder object will contain an artificial back stack for the
         // started Activity.
         // This ensures that navigating backward from the Activity leads out of
