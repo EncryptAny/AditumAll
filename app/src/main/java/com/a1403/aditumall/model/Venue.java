@@ -28,6 +28,8 @@ public class Venue {
         this.epiPen = epi;
         this.aed = aed;
         this.bathrooms = bathrooms;
+        this.lat = lat;
+        this.lon = lon;
     }
 
     public String getVenueId() {

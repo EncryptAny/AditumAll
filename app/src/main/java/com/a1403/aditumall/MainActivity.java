@@ -1,6 +1,5 @@
 package com.a1403.aditumall;
 
-
 import android.app.PendingIntent;
 
 import android.content.Intent;
@@ -34,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements VenueDetailListFr
     public static FragmentManager fragmentManager;
     private final int ADD_INFO_CODE = 1;
     private final int ADD_VENUE_CODE = 2;
+    private Venue active_Venue = DummyData.getDummyVenue_Libwest();
     GoogleApiClient googleApiClient = null;
     private double lat = 0;
     private double longt = 0;
@@ -136,6 +136,14 @@ public class MainActivity extends AppCompatActivity implements VenueDetailListFr
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    public Venue getActive_Venue() {
+        return active_Venue;
+    }
+
+    public void setActive_Venue(Venue active_Venue) {
+        this.active_Venue = active_Venue;
     }
 
     /**
