@@ -67,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements VenueDetailListFr
                         @Override
                         public void onConnected(Bundle bundle) {
                             Log.d(TAG, "Connected to GoogleApiClient");
+
                             startLocationMonitoring();
                         }
 
@@ -205,7 +206,7 @@ public class MainActivity extends AppCompatActivity implements VenueDetailListFr
                 Log.d(TAG, "longitude " + data.getDoubleExtra("latitude from marker",0));
                 Log.d(TAG, "radius " + data.getIntExtra("geoRadius",0));
                 data.getStringExtra("venue name");
-                addGeofence("test",data.getDoubleExtra("longitude from marker",0),data.getDoubleExtra("latitude from marker",0),data.getIntExtra("geoRadius",0),googleApiClient);
+                addGeofence("test",data.getDoubleExtra("latitude from marker",0),data.getDoubleExtra("longitude from marker",0),data.getIntExtra("geoRadius",0),googleApiClient);
             }
         }
     }
@@ -213,6 +214,7 @@ public class MainActivity extends AppCompatActivity implements VenueDetailListFr
         // Defines properties around getting location updates (location req params)
         Log.d(TAG, "startLocation called");
         try {
+
             LocationRequest locationRequest = LocationRequest.create()
                     .setInterval(1000) // rate of updates
                     .setFastestInterval(100) // maximum rate of updates triggered by other apps
@@ -236,7 +238,7 @@ public class MainActivity extends AppCompatActivity implements VenueDetailListFr
         Log.d(TAG, "startMonitoring called");
         try {
             // googleApiClient.connect();
-
+            Log.d(TAG, "try to start");
             Geofence geofence = new Geofence.Builder()
                     .setRequestId(geofenceId)
                     .setCircularRegion(lat,lon,rad) // lat, long, radius
