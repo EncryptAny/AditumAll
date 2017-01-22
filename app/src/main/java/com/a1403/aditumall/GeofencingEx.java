@@ -158,7 +158,7 @@ public class GeofencingEx extends AppCompatActivity implements GeofenceService.G
     @Override
     protected void onStop() {
         Log.d(TAG, "onStop called");
-        GeofenceService.unregisterGeofenceListener();
+        //GeofenceService.unregisterGeofenceListener();
         super.onStop();
         //googleApiClient.disconnect();
     }
@@ -169,7 +169,7 @@ public class GeofencingEx extends AppCompatActivity implements GeofenceService.G
         try {
             LocationRequest locationRequest = LocationRequest.create()
                     .setInterval(1000) // rate of updates
-                    .setFastestInterval(500) // maximum rate of updates triggered by other apps
+                    .setFastestInterval(100) // maximum rate of updates triggered by other apps
                     // .setNumUpdates(5) // can specify the number of updates to get (not needed)
                     .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY); // Suggests accuracy (RIP battery)
             // Ask for location updates
@@ -197,9 +197,9 @@ public class GeofencingEx extends AppCompatActivity implements GeofenceService.G
 
             Geofence geofence = new Geofence.Builder()
                     .setRequestId(GEOFENCE_ID)
-                    .setCircularRegion(lat,longt,25) // lat, long, radius
+                    .setCircularRegion(lat,longt,35) // lat, long, radius
                     .setExpirationDuration(Geofence.NEVER_EXPIRE)
-                    .setNotificationResponsiveness(1000) // time in ms to respond to event
+                    .setNotificationResponsiveness(350) // time in ms to respond to event
                     // Events that raise actions
                     .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT)
                     .build();
