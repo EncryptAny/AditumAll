@@ -247,9 +247,15 @@ public class MapsActivity extends Fragment implements GoogleApiClient.Connection
         if (location == null) {
             LocationServices.FusedLocationApi.requestLocationUpdates(locationApi, mLocationRequest, this);
             mLastLocation = LocationServices.FusedLocationApi.getLastLocation(locationApi);
-
-            double lat = mLastLocation.getLatitude();
-            double lon = mLastLocation.getLongitude();
+            double lat;
+            double lon;
+            if (mLastLocation == null) {
+                lat = 10;
+                lon = 10;
+            } else {
+                lat = mLastLocation.getLatitude();
+                lon = mLastLocation.getLongitude();
+            }
             mGoogleMap.getUiSettings().setAllGesturesEnabled(true);
             mGoogleMap.setMyLocationEnabled(true);
             LatLng currentLocation = new LatLng(lat, lon);

@@ -30,6 +30,9 @@ import java.util.ArrayList;
 
 public class GeofencingEx extends AppCompatActivity {
 
+    private double lat;
+    private double longt;
+
     public static final String TAG = "GeofencingEx";
     public static final String GEOFENCE_ID = "MyGeofenceId";
 
@@ -122,13 +125,13 @@ public class GeofencingEx extends AppCompatActivity {
         Log.d(TAG, "onResume called");
         super.onResume();
 
-        int response = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this);
-        if (response != ConnectionResult.SUCCESS) {
-            Log.d(TAG, "Google Play Services not available - show dialog to ask user to download it");
-            GoogleApiAvailability.getInstance().getErrorDialog(this, response, 1).show();
-        } else {
-            Log.d(TAG, "Google Play Services is available - no action required");
-        }
+//        int response = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this);
+//        if (response != ConnectionResult.SUCCESS) {
+//            Log.d(TAG, "Google Play Services not available - show dialog to ask user to download it");
+//            GoogleApiAvailability.getInstance().getErrorDialog(this, response, 1).show();
+//        } else {
+//            Log.d(TAG, "Google Play Services is available - no action required");
+//        }
     }
     // Controlling running location services in background
     @Override
@@ -140,9 +143,9 @@ public class GeofencingEx extends AppCompatActivity {
 
     @Override
     protected void onStop() {
-        Log.d(TAG, "onStop called");
+        //Log.d(TAG, "onStop called");
         super.onStop();
-        googleApiClient.disconnect();
+        //googleApiClient.disconnect();
     }
 
     private void startLocationMonitoring() {
@@ -150,8 +153,8 @@ public class GeofencingEx extends AppCompatActivity {
         Log.d(TAG, "startLocation called");
         try {
             LocationRequest locationRequest = LocationRequest.create()
-                    .setInterval(10000) // rate of updates
-                    .setFastestInterval(5000) // maximum rate of updates triggered by other apps
+                    .setInterval(1000) // rate of updates
+                    .setFastestInterval(500) // maximum rate of updates triggered by other apps
                     // .setNumUpdates(5) // can specify the number of updates to get (not needed)
                     .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY); // Suggests accuracy (RIP battery)
             // Ask for location updates
@@ -161,6 +164,10 @@ public class GeofencingEx extends AppCompatActivity {
                 public void onLocationChanged(Location location) {
                     Log.d(TAG, "Location updated lat/long " +
                             location.getLatitude() + " " + location.getLongitude());
+                    if (location != null) {
+                        lat = location.getLatitude();
+                        longt = location.getLongitude();
+                    }
                 }
                     });
         } catch (SecurityException e) {
@@ -175,9 +182,9 @@ public class GeofencingEx extends AppCompatActivity {
 
             Geofence geofence = new Geofence.Builder()
                     .setRequestId(GEOFENCE_ID)
-                    .setCircularRegion(33,-84,100) // lat, long, radius
+                    .setCircularRegion(lat,longt,1000) // lat, long, radius
                     .setExpirationDuration(Geofence.NEVER_EXPIRE)
-                    .setNotificationResponsiveness(1000) // time in ms to respond to event
+                    .setNotificationResponsiveness(10) // time in ms to respond to event
                     // Events that raise actions
                     .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT)
                     .build();
