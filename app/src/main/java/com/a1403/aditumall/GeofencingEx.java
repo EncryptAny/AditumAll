@@ -37,8 +37,9 @@ import java.util.ArrayList;
 
 public class GeofencingEx extends AppCompatActivity implements GeofenceService.GeofenceListener {
 
-    private double lat;
-    private double longt;
+    //TODO: Initialized these with values of current location 29.647797, -82.343678
+    private double lat = 29.647797;
+    private double longt = -82.343678;
 
     public static final String TAG = "GeofencingEx";
     public static final String GEOFENCE_ID = "MyGeofenceId";
@@ -158,10 +159,9 @@ public class GeofencingEx extends AppCompatActivity implements GeofenceService.G
         Log.d(TAG, "startMonitoring called");
         try {
             // googleApiClient.connect();
-
             Geofence geofence = new Geofence.Builder()
                     .setRequestId(GEOFENCE_ID)
-                    .setCircularRegion(lat,longt,35) // lat, long, radius
+                    .setCircularRegion(lat,longt,100) // lat, long, radius
                     .setExpirationDuration(Geofence.NEVER_EXPIRE)
                     .setNotificationResponsiveness(350) // time in ms to respond to event
                     // Events that raise actions

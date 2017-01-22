@@ -11,6 +11,7 @@
         android:name="com.a1403.aditumall.permission.MAPS_RECEIVE"
         android:protectionLevel="signature" />
 
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -46,6 +47,14 @@
         <activity
             android:name=".FullMap"
             android:label="@string/title_activity_full_map"></activity>
+        <activity
+            android:name=".GeofencingEx"
+            android:label="@string/title_activity_geofence_ex" />
+        <receiver android:name="com.example.StartupHandler">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

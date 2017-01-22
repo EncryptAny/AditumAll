@@ -1,10 +1,14 @@
 package com.a1403.aditumall;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -29,6 +33,7 @@ public class StartupHandler extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Intent startServiceIntent = new Intent(context, GeofenceNotify.class);
         context.startService(startServiceIntent);
+        Log.d(TAG, "startup wazzup");
         googleApiClient = new GoogleApiClient.Builder(context)
                 .addApi(LocationServices.API)
                 .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
