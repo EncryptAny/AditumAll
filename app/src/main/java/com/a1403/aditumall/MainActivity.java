@@ -1,16 +1,13 @@
 package com.a1403.aditumall;
 
 
-import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.Context;
-import android.app.PendingIntent;
+
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.TaskStackBuilder;
+
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -30,12 +27,7 @@ import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.Geofence;
-import com.google.android.gms.location.GeofencingRequest;
-import com.google.android.gms.location.LocationServices;
+
 
 public class MainActivity extends AppCompatActivity implements VenueDetailListFragment.OnListFragmentInteractionListener {
     public static FragmentManager fragmentManager;
@@ -211,6 +203,7 @@ public class MainActivity extends AppCompatActivity implements VenueDetailListFr
                 Log.d(TAG, "intent was not null and name was " + data.getStringExtra("venue name"));
 
                 data.getStringExtra("venue name");
+                addGeofence("test",data.getDoubleExtra("longitude from marker",0),data.getDoubleExtra("latitude from marker",0),data.getIntExtra("geoRadius",0),googleApiClient);
             }
         }
     }
@@ -230,61 +223,8 @@ public class MainActivity extends AppCompatActivity implements VenueDetailListFr
                         public void onLocationChanged(Location location) {
                             Log.d(TAG, "Location updated lat/long " +
                                     location.getLatitude() + " " + location.getLongitude());
-                            if (location != null) {
-                                if (lat == 0 && longt == 0)
-                                {
-                                    lat = location.getLatitude();
-                                    longt = location.getLongitude();
-                                    startGeofenceMonitoring();
-                                }
-                            }
                         }
                     });
-        } catch (SecurityException e) {
-            Log.d(TAG, "SecurityException - " + e.getMessage());
-        }
-    }
-
-    private void startGeofenceMonitoring() {
-        Log.d(TAG, "startMonitoring called");
-        try {
-            // googleApiClient.connect();
-
-            Geofence geofence = new Geofence.Builder()
-                    .setRequestId(GEOFENCE_ID)
-                    .setCircularRegion(lat,longt,35) // lat, long, radius
-                    .setExpirationDuration(Geofence.NEVER_EXPIRE)
-                    .setNotificationResponsiveness(350) // time in ms to respond to event
-                    // Events that raise actions
-                    .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT)
-                    .build();
-
-            // Request object
-            // Video mentions a variation that allows multiple geos grouped into one request
-            GeofencingRequest geofenceRequest = new GeofencingRequest.Builder()
-                    // If the device is already in geofence, this will cause entry transition to fire
-                    .setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER)
-                    .addGeofence(geofence).build();
-
-            // Need to instantiate intent and set it up as pending intent for future use.
-            Intent intent = new Intent(this, GeofenceNotify.class);
-            PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-            if (!googleApiClient.isConnected()) {
-                Log.d(TAG, "GoogleApiClient is not connected");
-            } else {
-                LocationServices.GeofencingApi.addGeofences(googleApiClient, geofenceRequest, pendingIntent)
-                        .setResultCallback(new ResultCallback<Status>() {
-                            @Override
-                            public void onResult(Status status) {
-                                if (status.isSuccess()) {
-                                    Log.d(TAG, "Successfully added geofence");
-                                } else {
-                                    Log.d(TAG, "Failed to add geofence + " + status.getStatus());
-                                }
-                            }
-                        });
-            }
         } catch (SecurityException e) {
             Log.d(TAG, "SecurityException - " + e.getMessage());
         }
