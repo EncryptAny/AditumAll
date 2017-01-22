@@ -1,6 +1,7 @@
 package com.a1403.aditumall;
 
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -13,7 +14,11 @@ import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+
+import java.security.Security;
 
 public class GeofencingEx extends AppCompatActivity {
 
@@ -131,7 +136,26 @@ public class GeofencingEx extends AppCompatActivity {
     }
 
     private void startLocationMonitoring() {
-
+        // Defines properties around getting location updates (location req params)
+        Log.d(TAG, "startLocation called");
+        try {
+            LocationRequest locationRequest = LocationRequest.create()
+                    .setInterval(10000) // rate of updates
+                    .setFastestInterval(5000) // maximum rate of updates triggered by other apps
+                    // .setNumUpdates(5) // can specify the number of updates to get (not needed)
+                    .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY); // Suggests accuracy (RIP battery)
+            // Ask for location updates
+            LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient,
+                    locationRequest, new LocationListener() {
+                @Override
+                public void onLocationChanged(Location location) {
+                    Log.d(TAG, "Location updated lat/long " +
+                            location.getLatitude() + " " + location.getLongitude());
+                }
+                    });
+        } catch (SecurityException e) {
+            Log.d(TAG, "SecurityException - " + e.getMessage());
+        }
     }
 
     private void startGeofenceMonitoring() {
