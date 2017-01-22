@@ -34,16 +34,17 @@ public class GeofenceNotify extends IntentService {
         } else {
             int transition = event.getGeofenceTransition();
             List<Geofence> geofences = event.getTriggeringGeofences();
-            Geofence geofence = geofences.get(0);
-            String requestId = geofence.getRequestId();
+            for (Geofence geofence : geofences) {
+                String requestId = geofence.getRequestId();
 
-            // event handling
-            if (transition == Geofence.GEOFENCE_TRANSITION_ENTER) {
-                Log.d(TAG, "Entering geofence - " + requestId);
-                onGeofenceEnter(requestId);
-            } else if (transition == Geofence.GEOFENCE_TRANSITION_EXIT) {
-                Log.d(TAG, "Exiting geofence - " + requestId);
-                onGeofenceExit(requestId);
+                // event handling
+                if (transition == Geofence.GEOFENCE_TRANSITION_ENTER) {
+                    Log.d(TAG, "Entering geofence - " + requestId);
+                    onGeofenceEnter(requestId);
+                } else if (transition == Geofence.GEOFENCE_TRANSITION_EXIT) {
+                    Log.d(TAG, "Exiting geofence - " + requestId);
+                    onGeofenceExit(requestId);
+                }
             }
         }
     }
