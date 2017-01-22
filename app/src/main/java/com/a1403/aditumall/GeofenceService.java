@@ -17,6 +17,8 @@ public class GeofenceService  extends IntentService {
 
     public static final String TAG = "GeofenceService";
 
+    private static GeofenceListener gfl = null;
+
     public GeofenceService() {
         super(TAG);
     }
@@ -35,10 +37,29 @@ public class GeofenceService  extends IntentService {
 
             // event handling
             if (transition == Geofence.GEOFENCE_TRANSITION_ENTER) {
+                if (gfl != null) {
+                    gfl.onEnterSpace();
+                }
                 Log.d(TAG, "Entering geofence - " + requestId);
             } else if (transition == Geofence.GEOFENCE_TRANSITION_EXIT) {
+                if (gfl != null) {
+                    gfl.onExitSpace();
+                }
                 Log.d(TAG, "Exiting geofence - " + requestId);
             }
         }
+    }
+
+    public static void registerGeofenceListener(GeofenceListener gfl3) {
+        gfl = gfl3;
+    }
+
+    public static void unregisterGeofenceListener() {
+        gfl = null;
+    }
+
+    public interface GeofenceListener {
+        void onEnterSpace();
+        void onExitSpace();
     }
 }
